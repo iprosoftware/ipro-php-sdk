@@ -5,7 +5,7 @@
  * Time: 16:20
  */
 
-require_once('IProClient.php');
+require_once('src/IProClient.php');
 
 $client = new IProClient('1000','0bd58c64591b407e969c72ffaffeaf99','http://www.azores-staging.cn');
 
