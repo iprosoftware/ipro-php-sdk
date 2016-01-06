@@ -25,7 +25,7 @@ php:
 before_script:
 
 # omitting "script:" will default to phpunit
-script: phpunit 
+script: phpunit
 
 # configure notifications (email, IRC, campfire etc)
 notifications:

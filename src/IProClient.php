@@ -258,7 +258,7 @@ class IProClient
 
 
     /**
-     * Execute a request (with curl)
+     *  Add an enquiry
      *
      * @param string    $firstName First Name
      * @param string    $lastName Last Name
@@ -276,6 +276,50 @@ class IProClient
      * @return array
      */
     public  function  addEnquiry($firstName,$lastName,$email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
+        if(!$this->hasAccessToken()){
+            throw new Exception('access_token is missing.');
+        }
+        $params = array(
+            'firstname'=>$firstName,
+            'lastname'=>$lastName,
+            'email'=>$email,
+            'propertyids'=>$propertyIds,
+            'startdate'=>$startDate,
+            'enddate'=>$endDate,
+            'days'=>$days,
+            'budget'=>$budget,
+            'mobile'=>$mobile,
+            'phone'=>$phone,
+            'adults'=>$adults,
+            'children'=>$children,
+            'source'=>$source,
+            'comment'=>$comment,
+            'createdate'=>$createdTime
+        );
+
+
+        return $this->executeRequest($this->host.'/apis/enquiry',$params, self::HTTP_METHOD_POST,array(),self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
+    }
+
+    /**
+     *  Add a booking
+     *
+     * @param string    $firstName First Name
+     * @param string    $lastName Last Name
+     * @param string    $propertyIds umbracoId in IPro system, eg. 1234,1235
+     * @param string    $startDate  Start date, format is yyyy-MM-dd
+     * @param string    $endDate  End date, format is yyyy-MM-dd
+     * @param string    $days  days
+     * @param string    $budget  budget
+     * @param string    $mobile  mobile
+     * @param string    $phone  phone
+     * @param string    $adults  adults
+     * @param string    $children  children
+     * @param string    $comment  comment
+     * @param string    $createdTime  created time, format is yyyy-MM-ddTHH:mm:ssZ. e.g 2016-01-05T07:26:40.7595426Z
+     * @return array
+     */
+    public  function  addBooking($firstName,$lastName,$email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
         if(!$this->hasAccessToken()){
             throw new Exception('access_token is missing.');
         }
