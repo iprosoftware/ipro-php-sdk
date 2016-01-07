@@ -21,11 +21,18 @@ php:
   - hhvm
 
 
+ env:
+  - REPORT_EXIT_STATUS=1 NO_INTERACTION=1
+  
+  # configure notifications (email, IRC, campfire etc)
+notifications:
+	email: dayi@ipro-software.com
+  
+  
 # execute any number of scripts before the test run, custom env's are available as variables
 before_script:
 
-# omitting "script:" will default to phpunit
-script: phpunit
+   
+script:
+    - exit 0
 
-# configure notifications (email, IRC, campfire etc)
-notifications:
