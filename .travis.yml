@@ -20,13 +20,10 @@ php:
   # aliased to a recent hhvm version
   - hhvm
 
-
- env:
-  - REPORT_EXIT_STATUS=1 NO_INTERACTION=1
   
   # configure notifications (email, IRC, campfire etc)
 notifications:
-	email: dayi@ipro-software.com
+	email: "dayi@ipro-software.com"
   
   
 # execute any number of scripts before the test run, custom env's are available as variables
