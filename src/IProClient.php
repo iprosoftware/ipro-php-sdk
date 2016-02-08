@@ -293,7 +293,7 @@ class IProClient
             'adults'=>$adults,
             'children'=>$children,
             'source'=>$source,
-            'comment'=>$comment,
+            'comments'=>$comment,
             'createdate'=>$createdTime
         );
 
