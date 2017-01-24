@@ -1,14 +1,11 @@
 <?php
+
 /**
  * Created by Dayi Chen.
  * Date: 2016/1/5
  * Time: 15:56
  */
-
-
-
-class IProClient
-{
+class IProClient {
 
     /**
      * Different Grant types
@@ -18,13 +15,12 @@ class IProClient
     /**
      * HTTP Methods
      */
-    const HTTP_METHOD_GET    = 'GET';
-    const HTTP_METHOD_POST   = 'POST';
-    const HTTP_METHOD_PUT    = 'PUT';
+    const HTTP_METHOD_GET = 'GET';
+    const HTTP_METHOD_POST = 'POST';
+    const HTTP_METHOD_PUT = 'PUT';
     const HTTP_METHOD_DELETE = 'DELETE';
-    const HTTP_METHOD_HEAD   = 'HEAD';
-    const HTTP_METHOD_PATCH   = 'PATCH';
-
+    const HTTP_METHOD_HEAD = 'HEAD';
+    const HTTP_METHOD_PATCH = 'PATCH';
 
     /**
      * HTTP Form content types
@@ -67,7 +63,6 @@ class IProClient
      */
     protected $access_token = null;
 
-
     /**
      * The path to the certificate file to use for https connections
      *
@@ -84,16 +79,15 @@ class IProClient
      * @param string $access_token Access Token
      * @return void
      */
-    public function __construct($client_id, $client_secret, $host)
-    {
+    public function __construct($client_id, $client_secret, $host) {
         if (!extension_loaded('curl')) {
             throw new Exception('The PHP exention curl must be installed to use this library.');
         }
 
-        $this->client_id     = $client_id;
+        $this->client_id = $client_id;
         $this->client_secret = $client_secret;
         $this->host = $host;
-        $this->token_endpoint   = $host . '/oauth/2.0/token';
+        $this->token_endpoint = $host . '/oauth/2.0/token';
     }
 
     /**
@@ -101,8 +95,7 @@ class IProClient
      *
      * @return string Client ID
      */
-    public function getClientId()
-    {
+    public function getClientId() {
         return $this->client_id;
     }
 
@@ -111,8 +104,7 @@ class IProClient
      *
      * @return string Client Secret
      */
-    public function getClientSecret()
-    {
+    public function getClientSecret() {
         return $this->client_secret;
     }
 
@@ -122,8 +114,7 @@ class IProClient
      * @param string $token Set the access token
      * @return void
      */
-    public function setAccessToken($token)
-    {
+    public function setAccessToken($token) {
         $this->access_token = $token;
     }
 
@@ -132,8 +123,7 @@ class IProClient
      *
      * @return bool Whether the access token is present
      */
-    public function hasAccessToken()
-    {
+    public function hasAccessToken() {
         return !!$this->access_token;
     }
 
@@ -142,14 +132,13 @@ class IProClient
      *
      * @return array Array of parameters required by the grant_type (CF SPEC)
      */
-    public function getAccessToken()
-    {
+    public function getAccessToken() {
         $parameters = array(
             'grant_type' => self::GRANT_TYPE_CLIENT_CREDENTIALS
         );
 
         $http_headers = array(
-            'Authorization' => 'Basic ' . base64_encode($this->client_id .  ':' . $this->client_secret)
+            'Authorization' => 'Basic ' . base64_encode($this->client_id . ':' . $this->client_secret)
         );
 
 
@@ -166,23 +155,22 @@ class IProClient
      * @param int    $form_content_type HTTP form content type to use
      * @return array
      */
-    private function executeRequest($url, $parameters = array(), $http_method = self::HTTP_METHOD_GET, array $http_headers = null, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_APPLICATION)
-    {
+    private function executeRequest($url, $parameters = array(), $http_method = self::HTTP_METHOD_GET, array $http_headers = null, $form_content_type = self::HTTP_FORM_CONTENT_TYPE_APPLICATION) {
         $curl_options = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_CUSTOMREQUEST  => $http_method
+            CURLOPT_CUSTOMREQUEST => $http_method
         );
 
-        if($this->hasAccessToken()){
+        if ($this->hasAccessToken()) {
             if (!is_array($http_headers)) {
-               $http_headers = array();
+                $http_headers = array();
             }
             $http_headers['Authorization'] = 'Bearer ' . $this->access_token;
         }
 
 
-        switch($http_method) {
+        switch ($http_method) {
             case self::HTTP_METHOD_POST:
                 $curl_options[CURLOPT_POST] = true;
             /* No break */
@@ -194,7 +182,7 @@ class IProClient
                  * while passing a URL-encoded string will encode the data as application/x-www-form-urlencoded.
                  * http://php.net/manual/en/function.curl-setopt.php
                  */
-                if(is_array($parameters) && self::HTTP_FORM_CONTENT_TYPE_APPLICATION === $form_content_type) {
+                if (is_array($parameters) && self::HTTP_FORM_CONTENT_TYPE_APPLICATION === $form_content_type) {
                     $parameters = http_build_query($parameters, null, '&');
                 }
                 $curl_options[CURLOPT_POSTFIELDS] = $parameters;
@@ -218,7 +206,7 @@ class IProClient
 
         if (is_array($http_headers)) {
             $header = array();
-            foreach($http_headers as $key => $parsed_urlvalue) {
+            foreach ($http_headers as $key => $parsed_urlvalue) {
                 $header[] = "$key: $parsed_urlvalue";
             }
             $curl_options[CURLOPT_HTTPHEADER] = $header;
@@ -256,7 +244,6 @@ class IProClient
         );
     }
 
-
     /**
      *  Add an enquiry
      *
@@ -275,30 +262,30 @@ class IProClient
      * @param string    $createdTime  created time, format is yyyy-MM-ddTHH:mm:ssZ. e.g 2016-01-05T07:26:40.7595426Z
      * @return array
      */
-    public  function  addEnquiry($firstName,$lastName,$email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
-        if(!$this->hasAccessToken()){
+    public function addEnquiry($firstName, $lastName, $email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
+        if (!$this->hasAccessToken()) {
             throw new Exception('access_token is missing.');
         }
         $params = array(
-            'firstname'=>$firstName,
-            'lastname'=>$lastName,
-            'email'=>$email,
-            'propertyids'=>$propertyIds,
-            'startdate'=>$startDate,
-            'enddate'=>$endDate,
-            'days'=>$days,
-            'budget'=>$budget,
-            'mobile'=>$mobile,
-            'phone'=>$phone,
-            'adults'=>$adults,
-            'children'=>$children,
-            'source'=>$source,
-            'comments'=>$comment,
-            'createdate'=>$createdTime
+            'firstname' => $firstName,
+            'lastname' => $lastName,
+            'email' => $email,
+            'propertyids' => $propertyIds,
+            'startdate' => $startDate,
+            'enddate' => $endDate,
+            'days' => $days,
+            'budget' => $budget,
+            'mobile' => $mobile,
+            'phone' => $phone,
+            'adults' => $adults,
+            'children' => $children,
+            'source' => $source,
+            'comments' => $comment,
+            'createdate' => $createdTime
         );
 
 
-        return $this->executeRequest($this->host.'/apis/enquiry',$params, self::HTTP_METHOD_POST,array(),self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
+        return $this->executeRequest($this->host . '/apis/enquiry', $params, self::HTTP_METHOD_POST, array(), self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
     }
 
     /**
@@ -319,30 +306,67 @@ class IProClient
      * @param string    $createdTime  created time, format is yyyy-MM-ddTHH:mm:ssZ. e.g 2016-01-05T07:26:40.7595426Z
      * @return array
      */
-    public  function  addBooking($firstName,$lastName,$email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
-        if(!$this->hasAccessToken()){
+    public function addBooking($firstName, $lastName, $email, $propertyIds, $startDate, $endDate, $days, $budget, $mobile, $phone, $adults, $children, $source, $comment, $createdTime) {
+        if (!$this->hasAccessToken()) {
             throw new Exception('access_token is missing.');
         }
         $params = array(
-            'firstname'=>$firstName,
-            'lastname'=>$lastName,
-            'email'=>$email,
-            'propertyids'=>$propertyIds,
-            'startdate'=>$startDate,
-            'enddate'=>$endDate,
-            'days'=>$days,
-            'budget'=>$budget,
-            'mobile'=>$mobile,
-            'phone'=>$phone,
-            'adults'=>$adults,
-            'children'=>$children,
-            'source'=>$source,
-            'comment'=>$comment,
-            'createdate'=>$createdTime
+            'firstname' => $firstName,
+            'lastname' => $lastName,
+            'email' => $email,
+            'propertyids' => $propertyIds,
+            'startdate' => $startDate,
+            'enddate' => $endDate,
+            'days' => $days,
+            'budget' => $budget,
+            'mobile' => $mobile,
+            'phone' => $phone,
+            'adults' => $adults,
+            'children' => $children,
+            'source' => $source,
+            'comment' => $comment,
+            'createdate' => $createdTime
         );
 
 
-        return $this->executeRequest($this->host.'/apis/enquiry',$params, self::HTTP_METHOD_POST,array(),self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
+        return $this->executeRequest($this->host . '/apis/enquiry', $params, self::HTTP_METHOD_POST, array(), self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
     }
-}
 
+    /**
+     * Calculate a booking based on the given parameters
+     * 
+     * @param int $propertyid
+     * @param string $checkin (Y-m-d)
+     * @param string $checkout (Y-m-d)
+     * @param int $adults
+     * @param int $children
+     * @param int $infants
+     * @param int $pets
+     * @return json array
+     */
+    public function calculateBooking($propertyid, $checkin, $checkout, $adults = 1, $children = 0, $infants = 0, $pets = 0) {
+        $params = [];
+        $params["Properties[0].Id"] = $propertyid;
+        $params["Properties[0].Checkin"] = $checkin;
+        $params["Properties[0].Checkout"] = $checkout;
+        $params["Properties[0].Adults"] = $adults;
+        $params["Properties[0].Children"] = $children;
+        $params["Properties[0].Infants"] = $infants;
+
+        if ($pets > 0) {
+            $petsextraid = 9999; //TODO - Get the id of pets extra
+            $params["Properties[0].Extras[0].Id"] = $petsextraid;
+            $params["Properties[0].Extras[0].Qty"] = $pets;
+        }
+
+        return $this->executeRequest($this->host . '/apis/booking/calc', $params, self::HTTP_METHOD_POST, array(), self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
+    }
+
+    /**
+     * Returns the complete list of live properties
+     */
+    public function propertyList($params = []) {
+        return $this->executeRequest($this->host . '/apis/properties', $params, self::HTTP_METHOD_GET, array(), self::HTTP_FORM_CONTENT_TYPE_APPLICATION);
+    }
+
+}
