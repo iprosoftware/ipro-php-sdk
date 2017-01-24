@@ -344,7 +344,7 @@ class IProClient {
      * @param int $pets
      * @return json array
      */
-    public function calculateBooking($propertyid, $checkin, $checkout, $adults = 1, $children = 0, $infants = 0, $pets = 0) {
+    public function calculateBooking($propertyid, $checkin, $checkout, $adults = 1, $children = 0, $infants = 0, $pets = 0, $petsextraid = 9999) {
         $params = [];
         $params["Properties[0].Id"] = $propertyid;
         $params["Properties[0].Checkin"] = $checkin;
@@ -354,7 +354,6 @@ class IProClient {
         $params["Properties[0].Infants"] = $infants;
 
         if ($pets > 0) {
-            $petsextraid = 9999; //TODO - Get the id of pets extra
             $params["Properties[0].Extras[0].Id"] = $petsextraid;
             $params["Properties[0].Extras[0].Qty"] = $pets;
         }
